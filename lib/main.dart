@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:desktop_window/desktop_window.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,7 +28,11 @@ void main() async {
 //     await DesktopWindow.setMinWindowSize(Size(240.w, 320.h));
 // }
   await NetworkInfoImpl().checkInternet();
-  runApp(const MyApp());
+
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) {
+    runApp(MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -65,7 +70,19 @@ class MyApp extends StatelessWidget {
 
             child : MaterialApp(
               theme: ThemeData(
+
 primarySwatch: Colors.blueGrey,
+
+                appBarTheme: AppBarTheme(
+
+                  foregroundColor:Colors.white ,
+
+surfaceTintColor:  Colors.white
+
+                  ),
+                colorScheme: ColorScheme.fromSeed(
+
+                    seedColor: primaryColor),
                 fontFamily: GoogleFonts.tajawal(fontSize: 16.sp,).fontFamily,
                 pageTransitionsTheme: PageTransitionsTheme(builders: {
                   TargetPlatform.iOS:

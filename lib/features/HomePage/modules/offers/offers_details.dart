@@ -31,9 +31,9 @@ backgroundColor: primaryColor,
     },
     builder: (context, state) {
       var cubit = OffersCubit.get(context);
-      return SingleChildScrollView(
+      return ListView(
         physics: const BouncingScrollPhysics(),
-        child: Column(
+
           children: [
             Stack(
               alignment: Alignment.bottomCenter,
@@ -77,6 +77,29 @@ backgroundColor: primaryColor,
                   ),
                   fit: BoxFit.cover,
                 ),
+                Positioned(
+                  top: 20.h,
+                  right: 20.w,
+                  child: Container(
+                    height: 50.h,
+                    width: 50.w,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.r),
+                      color: Colors.white,
+                    ),
+
+                    child: Center(
+                      child: IconButton(
+                        icon:
+                        const Icon(Icons.arrow_back_ios,color: Colors.black,),
+                        onPressed: (){
+                          Navigator.pop(context);
+                          // ClinicCubit.get(context).clearData();
+                        },
+                      ),
+                    ),
+                  ),
+                ),
                 // Image.network(
                 //   cubit.offers![index].imageUrl.toString(),
                 //   width: double.infinity,
@@ -89,7 +112,7 @@ backgroundColor: primaryColor,
                   child: Padding(
                     padding: EdgeInsets.only(top: 300.h, bottom: 0.h,),
                     child: Container(
-                      height: 50.h,
+                      height: 60.h,
                       width: double.infinity,
                       decoration: const BoxDecoration(
                         borderRadius: BorderRadius.only(
@@ -98,33 +121,21 @@ backgroundColor: primaryColor,
                         ),
                         color: primaryColor,
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                      top: 16.h, right: 16.w),
-                                  child: Text(cubit.offers![index].title.toString(),
-                                    // cli.serviceProvider.toString().length > 31
-                                    //     ? cli.serviceProvider.toString().substring(0 , 30)
-                                    //     :
-                                    // cli.serviceProvider.toString(),
-                                    style: GoogleFonts.tajawal(
-                                      fontSize: 20.sp,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ),
-                            ],
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            top: 16.h, right: 16.w),
+                        child: Text(cubit.offers![index].title.toString(),
+                          // cli.serviceProvider.toString().length > 31
+                          //     ? cli.serviceProvider.toString().substring(0 , 30)
+                          //     :
+                          // cli.serviceProvider.toString(),
+                          style: GoogleFonts.tajawal(
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.bold,
                           ),
-
-                        ],
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ),
                   ),
@@ -212,7 +223,7 @@ backgroundColor: primaryColor,
               ),
             ),
           ],
-        ),
+
       );
     }
   );

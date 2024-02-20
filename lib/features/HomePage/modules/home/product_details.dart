@@ -262,7 +262,10 @@ class ZoomableImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: appBarDefaultTheme(context: context, isReverse:
+      true, title: ''),
       body: PhotoViewGallery.builder(
+        scrollPhysics: BouncingScrollPhysics(),
         itemCount: 1,
         builder: (context, index) {
           return PhotoViewGalleryPageOptions(

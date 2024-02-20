@@ -125,8 +125,7 @@ Widget defaultTextFormFeild(
       required String? Function(String?) validate,
       String? hint,
       required String label,
-      Widget? suffix,
-      Widget? prefix,
+
       Function()? onpressed,
       bool secure = false,
       FocusNode? focusNode,
@@ -156,14 +155,9 @@ Widget defaultTextFormFeild(
           gapPadding: 2,
           borderRadius: BorderRadius.circular(14),
         ),
-        suffixIcon: IconButton(
-          onPressed: () {
-            onpressed!();
-          },
-          icon: suffix!,
-        ),
 
-        prefixIcon: prefix != null ? prefix : null ,
+
+
         hintText: hint,
         labelText: label,
         alignLabelWithHint: true,

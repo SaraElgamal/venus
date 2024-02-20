@@ -8,6 +8,7 @@ import '../HomePage/modules/contact_us.dart';
 import '../HomePage/modules/home/home_screen.dart';
 import '../HomePage/modules/offers/offers.dart';
 import '../HomePage/modules/who_we_are/who_we_are.dart';
+import '../web_view.dart';
 
 class AppCubit extends Cubit<AppStates> {
 
@@ -26,6 +27,7 @@ class AppCubit extends Cubit<AppStates> {
     const Offers(),
     const WhoWeAre(),
     ContactUs(),
+   // WebViewApp('https://venuzapp.github.io/'),
 
 
 

@@ -63,7 +63,7 @@ class WhoWeAre extends StatelessWidget {
                         child: Text(cubit.defineHeader!.title.toString(),
                           style: GoogleFonts.tajawal(
                             fontWeight: FontWeight.w700,
-                            fontSize: 14.sp,
+                            fontSize: 16.sp,
                           ),),
                       ),
                       Positioned(
@@ -73,12 +73,12 @@ class WhoWeAre extends StatelessWidget {
                         child: Text(cubit.defineHeader!.description.toString(),
                           style: GoogleFonts.cairo(
                             height: 1.3,
-                            fontSize: 10.sp,
+                            fontSize: 14.sp,
                           ),),
                       ),
                       Positioned(
                         left: 6.w,
-                        right: 115.w,
+                        right: 100.w,
                         top: 180.h,
                         bottom: 0.h,
                         child: Container(
@@ -99,14 +99,14 @@ class WhoWeAre extends StatelessWidget {
                             ],
                           ),
                           height: 63.h,
-                          width: 229.w,
+                          width: 300.w,
 
                         ),
                       ),
                       /// container white
                       Positioned(
 
-                        right: 137.w,
+                        right: 130.w,
                         top: 190.h,
                         bottom: 0.h,
                         child: Text('${cubit.defineStatic!.worksShops} +' ,
@@ -118,7 +118,7 @@ class WhoWeAre extends StatelessWidget {
                       ),
                       Positioned(
 
-                        right: 120.w,
+                        right: 110.w,
                         top: 210.h,
                         bottom: 0.h,
                         child: Text('حملات التصوير',
@@ -129,7 +129,7 @@ class WhoWeAre extends StatelessWidget {
                           ),),
                       ),
                       Positioned(
-                        left: 150.w,
+                        left: 155.w,
 
 
                         top: 190.h,
@@ -164,7 +164,7 @@ class WhoWeAre extends StatelessWidget {
                         ),),
                       ),
                       Positioned(
-                        left: 75.w,
+                        left: 80.w,
 
 
                         top: 190.h,
@@ -235,7 +235,7 @@ class WhoWeAre extends StatelessWidget {
                               child: Text('${cubit.defineCards!.card1!.title.toString()} ${cubit.defineCards!.card1!.description.toString()}',style: GoogleFonts.cairo(
 
                                 fontSize: 14.sp,
-                                color: textColorLines,
+                                color: Colors.black,
                               ),
                                 textAlign: TextAlign.center,
                               )),
@@ -268,7 +268,7 @@ class WhoWeAre extends StatelessWidget {
                               child: Text('${cubit.defineCards!.card2!.title.toString()} ${cubit.defineCards!.card2!.description.toString()}',style: GoogleFonts.cairo(
 
                                 fontSize: 14.sp,
-                                color: textColorLines,
+                                color: Colors.black,
                               ),
                                 textAlign: TextAlign.center,
                               )),
@@ -305,7 +305,7 @@ class WhoWeAre extends StatelessWidget {
                               child: Text('${cubit.defineCards!.card3!.title.toString()} ${cubit.defineCards!.card3!.description.toString()}',style: GoogleFonts.cairo(
 
                                 fontSize: 14.sp,
-                                color: textColorLines,
+                                color:  Colors.black,
                               ),
                                 textAlign: TextAlign.center,
                               )),
@@ -338,7 +338,7 @@ class WhoWeAre extends StatelessWidget {
                               child: Text('${cubit.defineCards!.card4!.title.toString()} ${cubit.defineCards!.card4!.description.toString()}',style: GoogleFonts.cairo(
 
                                 fontSize: 14.sp,
-                                color: textColorLines,
+                                color: Colors.black,
                               ),
                                 textAlign: TextAlign.center,
                               )),

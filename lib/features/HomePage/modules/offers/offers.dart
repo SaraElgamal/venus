@@ -103,31 +103,11 @@ class Offers extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 16.h,
-            right: 8.w,
-            child: Text(offer.title.toString(),
-              style: GoogleFonts.tajawal(
-color: secondColorLines,
-              fontWeight: FontWeight.bold,
-                fontSize: 16.sp,
-            ),),
-          ),
-          Positioned(
-            top: 45.h,
-            right: 8.w,
-            left: 131.w,
-            child: Text(offer.subTitle.toString(),style: GoogleFonts.cairo(
-fontSize: 12.sp,
-height: 1.4,
-color: textColorLines,
-            ),),
-          ),
-          Positioned(
-           left: 8.w,
-            right: 240.w,
-            top: 2.h,
+              right: 8.w,
+              left: 240.w,
+              top: 2.h,
 
-child:
+              child:
 // Image.network(
 //
 //
@@ -161,7 +141,7 @@ child:
 //   ),
 //
 // ),
-   CachedNetworkImage(
+              CachedNetworkImage(
                 imageUrl: offer.imageUrl.toString(),
                 imageBuilder: (context, imageProvider) => Container(
                   height: 112.h,
@@ -182,10 +162,10 @@ child:
                     image: DecorationImage(
                       image: AssetImage('assets/images/placeholder.png'),
                       fit: BoxFit.cover,
-                  ),
-                  // You can add additional widgets for loading state (e.g., a loading spinner)
+                    ),
+                    // You can add additional widgets for loading state (e.g., a loading spinner)
 
-                ),
+                  ),
                 ),
                 errorWidget: (context, url, error) => Container(
                   height: 112.h,
@@ -199,7 +179,41 @@ child:
                 fit: BoxFit.cover,
               )
           ),
+          Positioned(
+            top: 16.h,
+            left: 10.w,
+            right: 131.w,
+            child: Text(offer.title.toString(),
+              style: GoogleFonts.cairo(
+color: secondColorLines,
+              fontWeight: FontWeight.bold,
+                fontSize: 14.sp,
+            ),
+            maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          Positioned(
+            top: 45.h,
+            left: 10.w,
+            right: 131.w,
+            child: Text(offer.subTitle.toString(),style: GoogleFonts.tajawal(
+fontSize: 12.sp,
+height: 1.4,
+color: textColorLines,
+            ),
 
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+
+          Positioned(
+            left: 8.w,
+            right: 320.w,
+            top: 80.h,
+            child: Icon(Icons.arrow_forward),
+          ),
 
 
         ],

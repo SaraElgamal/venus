@@ -1,12 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:venus/core/components/components.dart';
 import 'package:venus/features/HomePage/modules/home/product_details.dart';
+import 'package:venus/features/HomePage/modules/home/servicesDetails.dart';
 import 'package:venus/features/HomePage/modules/offers/offer_logic/cubit.dart';
 import 'package:venus/features/HomePage/modules/offers/offer_logic/state.dart';
 
@@ -15,7 +17,6 @@ import '../../../../core/utils/custom_dot.dart';
 import 'our_works.dart';
 
 class HomeScreen extends StatefulWidget {
-
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
@@ -26,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int currentImage = 0;
 
   final PageController _pageController =
-  PageController(initialPage: 0, viewportFraction: 1);
+      PageController(initialPage: 0, viewportFraction: 1);
 
   @override
   void initState() {
@@ -67,8 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  List<String> images =
-  [
+  List<String> images = [
     'assets/images/photo1.png',
     'assets/images/photo2.png',
     'assets/images/photo3.png',
@@ -79,157 +79,176 @@ class _HomeScreenState extends State<HomeScreen> {
     return SafeArea(
       child: Scaffold(
         body: Padding(
-          padding:  EdgeInsets.symmetric(horizontal: 20.w,vertical: 9.h),
+          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 9.h),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-
               children: [
-                SizedBox(height: 20.h,),
-
-
+                SizedBox(
+                  height: 20.h,
+                ),
                 BlocBuilder<OffersCubit, OffersStates>(
                   builder: (context, state) {
                     if (state is GetSliderLoadingsState) {
                       return Padding(
                         padding: EdgeInsets.all(8.0.r),
-                        child:  Center(
-                            child: Lottie.asset('assets/animation/Animation - 1705103164209.json')),
+                        child: Center(
+                            child: Lottie.asset(
+                                'assets/animation/Animation - 1705103164209.json')),
                       );
-                    }
+                    } else {
+                      return OffersCubit.get(context).sliders!.isNotEmpty
+                          ? SizedBox(
+                              height: 200.h,
+                              width: double.infinity,
+                              child: PageView.builder(
+                                controller: _pageController,
+                                itemCount:
+                                    OffersCubit.get(context).sliders!.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return AnimatedBuilder(
+                                    animation: _pageController,
+                                    builder:
+                                        (BuildContext context, Widget? widget) {
+                                      double value = 1.0;
+                                      if (_pageController
+                                          .position.haveDimensions) {
+                                        value = _pageController.page! - index;
+                                        value = (1 - (value.abs() * 0.1))
+                                            .clamp(0.0, 2.0);
+                                      }
+                                      return Center(
+                                        child: SizedBox(
+                                          height:
+                                              Curves.easeOut.transform(value) *
+                                                  MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  .30,
+                                          width:
+                                              Curves.easeIn.transform(value) *
+                                                  double.infinity,
+                                          child: Container(
+                                            padding: const EdgeInsets.all(
+                                                0), // Remove padding around the image
+                                            child: widget,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 3.0.r),
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(16.r),
+                                        child: CachedNetworkImage(
+                                          imageUrl: OffersCubit.get(context)
+                                              .sliders![index]
+                                              .imageUrl
+                                              .toString(),
+                                          imageBuilder:
+                                              (context, imageProvider) =>
+                                                  Container(
+                                            height: 180.h,
+                                            margin:
+                                                EdgeInsets.only(right: 10.0.w),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              image: DecorationImage(
+                                                image: imageProvider,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                          placeholder: (context, url) =>
+                                              Container(
+                                            height: 180.h,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(14),
+                                              color: Colors
+                                                  .grey, // Placeholder color
 
-                   else {
-                     return
-                       OffersCubit.get(context).sliders!.isNotEmpty
-                           ? SizedBox(
-                       height: 200.h,
-                       width: double.infinity,
-                       child: PageView.builder(
+                                              image: DecorationImage(
+                                                image: AssetImage(
+                                                    'assets/images/placeholder.png'),
+                                                fit: BoxFit.cover,
+                                              ),
+                                              // You can add additional widgets for loading state (e.g., a loading spinner)
+                                            ),
+                                          ),
+                                          errorWidget: (context, url, error) =>
+                                              Container(
+                                            height: 180.h,
+                                            // width: 87.w,
+                                            margin:
+                                                EdgeInsets.only(right: 10.0.w),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(8.r),
+                                              color: Colors.grey
+                                                  .shade300, // Placeholder color for error state
+                                            ),
+                                            // You can add additional widgets for error state (e.g., an error icon)
+                                            child: Center(
+                                                child: Icon(
+                                              Icons.error_outline,
+                                              color: Colors.red,
+                                            )),
+                                          ),
+                                          fit: BoxFit.cover,
+                                        ),
 
-                         controller: _pageController,
-                         itemCount:
-                         OffersCubit.get(context).sliders!.length,
-                         itemBuilder: (BuildContext context, int index) {
-                           return AnimatedBuilder(
-                             animation: _pageController,
-                             builder:
-                                 (BuildContext context, Widget? widget) {
-                               double value = 1.0;
-                               if (_pageController
-                                   .position.haveDimensions) {
-                                 value = _pageController.page! - index;
-                                 value = (1 - (value.abs() * 0.1))
-                                     .clamp(0.0, 2.0);
-                               }
-                               return Center(
-                                 child: SizedBox(
-                                   height:
-                                   Curves.easeOut.transform(value) *
-                                       MediaQuery.of(context).size.height*.30,
-                                   width:
-                                   Curves.easeIn.transform(value) *
-                                       double.infinity,
-                                   child: Container(
-                                     padding: const EdgeInsets.all(
-                                         0), // Remove padding around the image
-                                     child: widget,
-                                   ),
-                                 ),
-                               );
-                             },
-                             child: Padding(
-                               padding: EdgeInsets.symmetric(
-                                   horizontal: 3.0.r),
-                               child: ClipRRect(
-                                 borderRadius:
-                                 BorderRadius.circular(16.r),
-                                 child:  CachedNetworkImage(
-                                   imageUrl:    OffersCubit.get(context).sliders![index]
-                                       .imageUrl.toString(),
-                                   imageBuilder: (context, imageProvider) => Container(
-                                     height: 180.h,
-
-                                     margin: EdgeInsets.only(right: 10.0.w),
-
-                                     decoration: BoxDecoration(
-                                       borderRadius: BorderRadius.circular(8),
-                                       image: DecorationImage(
-                                         image: imageProvider,
-                                         fit: BoxFit.cover,
-                                       ),
-                                     ),
-                                   ),
-                                   placeholder: (context, url) => Container(
-                                     height: 180.h,
-                                     decoration: BoxDecoration(
-                                       borderRadius: BorderRadius.circular(14),
-                                       color: Colors.grey, // Placeholder color
-
-                                       image: DecorationImage(
-                                         image: AssetImage('assets/images/placeholder.png'),
-                                         fit: BoxFit.cover,
-                                       ),
-                                       // You can add additional widgets for loading state (e.g., a loading spinner)
-
-                                     ),
-                                   ),
-                                   errorWidget: (context, url, error) => Container(
-                                     height: 180.h,
-                                    // width: 87.w,
-                                     margin: EdgeInsets.only(right: 10.0.w),
-                                     decoration: BoxDecoration(
-                                       borderRadius: BorderRadius.circular(8.r),
-                                       color: Colors.grey.shade300, // Placeholder color for error state
-                                     ),
-                                     // You can add additional widgets for error state (e.g., an error icon)
-                                     child: Center(child: Icon(Icons.error_outline,color: Colors.red,)),
-                                   ),
-                                   fit: BoxFit.cover,
-                                 ),
-
-
-                                 //
-                                 // Image.network(
-                                 //   fit: BoxFit.fill,
-                                 //
-                                 //   OffersCubit.get(context).sliders![index]
-                                 //       .imageUrl.toString(),
-                                 //   loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                                 //     if (loadingProgress == null) {
-                                 //       return child; // If the image is fully loaded, display it
-                                 //     } else {
-                                 //       return Placeholder(
-                                 //         child: Image.asset(
-                                 //
-                                 //           'assets/images/placeholder.png',
-                                 //         fit: BoxFit.fill,
-                                 //       ),); // Display a placeholder while loading
-                                 //     }
-                                 //   },
-                                 // ),
-                               ),
-                             ),
-                           );
-                         },
-                       ),
-                     ) :  Container(
-                         height: 180.h,
-                         width: double.infinity,
-                         margin: EdgeInsets.only(right: 10.0.w),
-                         decoration: BoxDecoration(
-                           borderRadius: BorderRadius.circular(8.r),
-                           color: Colors.grey.shade300, // Placeholder color for error state
-                         ),
-                         // You can add additional widgets for error state (e.g., an error icon)
-                         child: Center(child: Column(
-                           mainAxisAlignment: MainAxisAlignment.center,
-                           children: [
-                             const  Icon(Icons.error_outline,color: Colors.red,),
-                             SizedBox(height : 20.h),
-                             const   Text('لا يوجد اتصال بالانترنت'),
-                           ],
-                         )),
-                       );
+                                        //
+                                        // Image.network(
+                                        //   fit: BoxFit.fill,
+                                        //
+                                        //   OffersCubit.get(context).sliders![index]
+                                        //       .imageUrl.toString(),
+                                        //   loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                                        //     if (loadingProgress == null) {
+                                        //       return child; // If the image is fully loaded, display it
+                                        //     } else {
+                                        //       return Placeholder(
+                                        //         child: Image.asset(
+                                        //
+                                        //           'assets/images/placeholder.png',
+                                        //         fit: BoxFit.fill,
+                                        //       ),); // Display a placeholder while loading
+                                        //     }
+                                        //   },
+                                        // ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            )
+                          : Container(
+                              height: 180.h,
+                              width: double.infinity,
+                              margin: EdgeInsets.only(right: 10.0.w),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.r),
+                                color: Colors.grey
+                                    .shade300, // Placeholder color for error state
+                              ),
+                              // You can add additional widgets for error state (e.g., an error icon)
+                              child: Center(
+                                  child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.error_outline,
+                                    color: Colors.red,
+                                  ),
+                                  SizedBox(height: 20.h),
+                                  const Text('لا يوجد اتصال بالانترنت'),
+                                ],
+                              )),
+                            );
                       // return  Image.network(
                       //   OffersCubit.get(context).sliders![0]
                       //       .imageUrl.toString(),
@@ -298,14 +317,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     return const Text('null');
                   },
                 ),
-                  SizedBox(
-                        height: 15.h,
-                      ),
+                SizedBox(
+                  height: 15.h,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(
                     OffersCubit.get(context).sliders!.length,
-                        (index) => CustomDot(
+                    (index) => CustomDot(
                       currentIndex: currentImage,
                       index: index,
                       color: currentImage == index
@@ -314,374 +333,242 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 16.h,),
-                Text('الخدمات',  style: GoogleFonts.cairo(
-                  fontSize: 16.sp,
-                  color: secondColorLines,
-                  fontWeight: FontWeight.w700,
-                ),),
-                SizedBox(height: 8.h,),
-                BlocConsumer<OffersCubit,OffersStates>(
-                  listener: (context, state) {
-
-                  },
-                  builder: (context, state) {
-                    if(state is GetServicesLoadingsState)
-                    {
-                      return Center(child: Lottie.asset(
-                          'assets/animation/Animation - 1705103164209.json'));
-                    }
-                    else if (OffersCubit.get(context).services!.isNotEmpty) {
-                      return GridView.count(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        mainAxisSpacing: 10.0,
-                        crossAxisSpacing: 10.0,
-                         //childAspectRatio: 1/ 1.90,
-
-                        crossAxisCount: 2,
-                        //number of them
-                        children: List.generate(
-                          OffersCubit.get(context).services!.length,
-                              (index) => buildGridView(index),
-                        ),
-                      );
-
-
-
-
-                    //   return Stack(
-                    //   children: [
-                    //     Container(
-                    //       height: 393.h,
-                    //       width: double.infinity,
-                    //     ),
-                    //     ///
-                    //     Positioned(
-                    //
-                    //       child: Container(
-                    //         width: 168.w,
-                    //         height: 111.h,
-                    //         decoration: BoxDecoration(
-                    //             borderRadius: BorderRadius.circular(8),
-                    //             image: const DecorationImage(
-                    //               fit: BoxFit.cover,
-                    //               image: AssetImage('assets/images/photo1.png'),)
-                    //         ),
-                    //       ),
-                    //     ),
-                    //     // title
-                    //     Positioned(
-                    //         top: 117.h,
-                    //         child: Text(OffersCubit.get(context).services![0].title.toString(),
-                    //           style: GoogleFonts.tajawal(fontSize: 11.sp,
-                    //
-                    //             fontWeight: FontWeight.bold,
-                    //           ),)),
-                    //     //sub
-                    //     Positioned(
-                    //       top: 133.h,
-                    //       left: 190.w,
-                    //       right: 0.w,
-                    //       child: Text(OffersCubit.get(context).services![0].subTitle.toString()
-                    //
-                    //         ,style: GoogleFonts.tajawal(fontSize: 10.sp),
-                    //       ),
-                    //
-                    //
-                    //     ),
-                    //     /// //////////////
-                    //     Positioned(
-                    //       top: 180.h,
-                    //       child: Container(
-                    //         width: 168.w,
-                    //         height: 111.h,
-                    //         decoration: BoxDecoration(
-                    //             borderRadius: BorderRadius.circular(8),
-                    //             image: const DecorationImage(
-                    //               fit: BoxFit.cover,
-                    //               image: AssetImage('assets/images/photo3.png'),)
-                    //         ),
-                    //       ),
-                    //     ),
-                    //     Positioned(
-                    //         top: 296.h,
-                    //         child: Text(OffersCubit.get(context).services![1].title.toString(),
-                    //           style: GoogleFonts.tajawal(fontSize: 11.sp,
-                    //
-                    //             fontWeight: FontWeight.bold,
-                    //           ),)),
-                    //     Positioned(
-                    //       top: 312.h,
-                    //       left: 190.w,
-                    //       right: 0.w,
-                    //       child: Text(OffersCubit.get(context).services![1].subTitle.toString()
-                    //         ,style: GoogleFonts.tajawal(fontSize: 10.sp),
-                    //       ),
-                    //
-                    //
-                    //     ),
-                    //     ///  ////////////
-                    //     Positioned(
-                    //       left: 0.w,
-                    //       right: 179.w,
-                    //       child: Container(
-                    //         width: 160.w,
-                    //         height: 164.h,
-                    //         decoration: BoxDecoration(
-                    //             borderRadius: BorderRadius.circular(8),
-                    //             image: const DecorationImage(
-                    //               fit: BoxFit.cover,
-                    //               image: AssetImage('assets/images/photo2.png'),)
-                    //         ),
-                    //       ),
-                    //     ),
-                    //     Positioned(
-                    //         top: 170.h,
-                    //         right: 179.w,
-                    //         child: Text(OffersCubit.get(context).services![2].title.toString(),
-                    //           style: GoogleFonts.tajawal(fontSize: 11.sp,
-                    //
-                    //             fontWeight: FontWeight.bold,
-                    //           ),)),
-                    //     Positioned(
-                    //       top: 189.h,
-                    //       left: 0.w,
-                    //       right: 179.w,
-                    //       child: Text(OffersCubit.get(context).services![2].subTitle.toString()
-                    //
-                    //         ,style: GoogleFonts.tajawal(fontSize: 10.sp),
-                    //       ),
-                    //
-                    //
-                    //     ),
-                    //     /// ///////////////
-                    //     Positioned(
-                    //       top: 231.h,
-                    //       left: 0.w,
-                    //       right: 179.w,
-                    //       child: Container(
-                    //         width: 160.w,
-                    //         height: 80.h,
-                    //         decoration: BoxDecoration(
-                    //             borderRadius: BorderRadius.circular(8),
-                    //             image: const DecorationImage(
-                    //               fit: BoxFit.cover,
-                    //               image: AssetImage('assets/images/photo3.png'),)
-                    //         ),
-                    //       ),
-                    //     ),
-                    //     Positioned(
-                    //         top: 320.h,
-                    //         right: 179.w,
-                    //         child: Text(OffersCubit.get(context).services![3].title.toString(),
-                    //           style: GoogleFonts.tajawal(fontSize: 11.sp,
-                    //
-                    //             fontWeight: FontWeight.bold,
-                    //           ),)),
-                    //     Positioned(
-                    //       top: 340.h,
-                    //       left: 0.w,
-                    //       right: 179.w,
-                    //       child: Text(OffersCubit.get(context).services![3].subTitle.toString()
-                    //
-                    //         ,style: GoogleFonts.tajawal(fontSize: 10.sp),
-                    //       ),
-                    //
-                    //
-                    //     ),
-                    //   ],
-                    // );
-
-                    }
-                    else {
-                      return  Container(
-                        height: 300.h,
-                        width: double.infinity,
-                        margin: EdgeInsets.only(right: 10.0.w),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8.r),
-                          color: Colors.grey.shade300, // Placeholder color for error state
-                        ),
-                        // You can add additional widgets for error state (e.g., an error icon)
-                        child: Center(child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                          const  Icon(Icons.error_outline,color: Colors.red,),
-                            SizedBox(height : 20.h),
-                          const   Text('لا يوجد اتصال بالانترنت'),
-                          ],
-                        )),
-                      ); }
-                  }
-                ),
-
-
-
-
-
-
-
-                Row(
-                  children: [
-                    Text('اعمالنا',style: GoogleFonts.cairo(
-                      fontSize: 16.sp,
-                      color: secondColorLines,
-                      fontWeight: FontWeight.w700,
-                    ),),
-                   const  Spacer(),
-                    TextButton(onPressed: ()
-                    {
-                      navigateTo(context, const OurWorks());
-                    }, child: Text('اعرف المزيد',style: GoogleFonts.tajawal(
-                      fontSize: 16.sp,
-                      color: secondColorLines,
-                      fontWeight: FontWeight.w700,
-                    ),),)
-                  ],
-                ),
-
                 SizedBox(
-                  height: 110.h,
-
-                  child: BlocConsumer<OffersCubit,OffersStates>(
-                    listener: (context, state) {
-
-                    },
+                  height: 16.h,
+                ),
+                Text(
+                  'الخدمات',
+                  style: GoogleFonts.cairo(
+                    fontSize: 16.sp,
+                    color: secondColorLines,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                SizedBox(
+                  height: 15.h,
+                ),
+                BlocConsumer<OffersCubit, OffersStates>(
+                    listener: (context, state) {},
                     builder: (context, state) {
-                      if (state is GetCategoryLoadingsState) {
-                        return Center(child: Lottie.asset(
-                            'assets/animation/Animation - 1705103164209.json'));
-                      }
-                      else {
-                        return  OffersCubit
-                            .get(context)
-                            .category!
-                            .isNotEmpty ?   ListView.builder(
+                      if (state is GetServicesLoadingsState) {
+                        return Center(
+                            child: Lottie.asset(
+                                'assets/animation/Animation - 1705103164209.json'));
+                      } else if (OffersCubit.get(context)
+                          .services!
+                          .isNotEmpty) {
+                        return GridView.count(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          mainAxisSpacing: 10.0,
+                          crossAxisSpacing: 10.0,
+                          //childAspectRatio: 1/ 1.90,
 
-                          scrollDirection: Axis.horizontal,
-                          //  shrinkWrap: true,
-                          physics: const BouncingScrollPhysics(),
-                          itemCount: OffersCubit
-                              .get(context)
-                              .category!
-                              .length,
-                          itemBuilder: (context, index) =>
-                              InkWell(
+                          crossAxisCount: 2,
+                          //number of them
+                          children: List.generate(
+                            OffersCubit.get(context).services!.length,
+                            (index) => InkWell(
                                 onTap: ()
                                 {
-                                  navigateTo(context, ProductsDetails(index: index));
+navigateTo(context, ServicesDetails(index: index,));
                                 },
-                                child: CachedNetworkImage(
-                                  imageUrl:  OffersCubit
-                                      .get(context)
-                                      .category![index].imageUrl
-                                      .toString(),
-                                  imageBuilder: (context, imageProvider) => Container(
-                                    height: 110.h,
-                                      width: 87.w,
-                                      margin: EdgeInsets.only(right: 10.0.w),
-
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                  placeholder: (context, url) => Container(
-                                    height: 470.h,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(14),
-                                      color: Colors.grey, // Placeholder color
-
-                                      image: DecorationImage(
-                                        image: AssetImage('assets/images/placeholder.png'),
-                                        fit: BoxFit.cover,
-                                      ),
-                                      // You can add additional widgets for loading state (e.g., a loading spinner)
-
-                                    ),
-                                  ),
-                                  errorWidget: (context, url, error) => Container(
-                                    height: 110.h,
-                                      width: 87.w,
-                                      margin: EdgeInsets.only(right: 10.0.w),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8.r),
-                                      color: Colors.red, // Placeholder color for error state
-                                    ),
-                                    // You can add additional widgets for error state (e.g., an error icon)
-                                    child: Center(child: Icon(Icons.error)),
-                                  ),
-                                  fit: BoxFit.cover,
-                                ),
-
-
-                                // Container(
-                                //   height: 110.h,
-                                //   width: 87.w,
-                                //   margin: EdgeInsets.only(right: 10.0.w),
-                                //   decoration: BoxDecoration(
-                                //     borderRadius: BorderRadius.circular(8),
-                                //     image: DecorationImage(
-                                //
-                                //         fit: BoxFit.cover,
-                                //         image: NetworkImage(
-                                //             OffersCubit
-                                //                 .get(context)
-                                //                 .category![index].imageUrl
-                                //                 .toString())),
-                                //   ),
-                                // ),
-                              ),
-                        ) :  ListView.builder(
-
-                          scrollDirection: Axis.horizontal,
-                          //  shrinkWrap: true,
-                          physics: const BouncingScrollPhysics(),
-                          itemCount: 3,
-                          itemBuilder: (context, index) =>
-                              InkWell(
-                                onTap: ()
-                                {
-                               //   navigateTo(context, ProductsDetails(index: index));
-                                },
-                                child: Container(
-                                  height: 120.h,
-                                  width: 87.w,
-                                  margin: EdgeInsets.only(right: 10.0.w),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.r),
-                                    color: Colors.grey.shade300, // Placeholder color for error state
-                                  ),
-                                  // You can add additional widgets for error state (e.g., an error icon)
-                                  child: Center(child: Icon(Icons.error_outline,color: Colors.red,)),
-                                ),
-                                ),
-
-
-                                // Container(
-                                //   height: 110.h,
-                                //   width: 87.w,
-                                //   margin: EdgeInsets.only(right: 10.0.w),
-                                //   decoration: BoxDecoration(
-                                //     borderRadius: BorderRadius.circular(8),
-                                //     image: DecorationImage(
-                                //
-                                //         fit: BoxFit.cover,
-                                //         image: NetworkImage(
-                                //             OffersCubit
-                                //                 .get(context)
-                                //                 .category![index].imageUrl
-                                //                 .toString())),
-                                //   ),
-                                // ),
+                                child: buildGridView(index)),
+                          ),
                         );
-
+                      } else {
+                        return Container(
+                          height: 300.h,
+                          width: double.infinity,
+                          margin: EdgeInsets.only(right: 10.0.w),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8.r),
+                            color: Colors.grey
+                                .shade300, // Placeholder color for error state
+                          ),
+                          // You can add additional widgets for error state (e.g., an error icon)
+                          child: Center(
+                              child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.error_outline,
+                                color: Colors.red,
+                              ),
+                              SizedBox(height: 20.h),
+                              const Text('لا يوجد اتصال بالانترنت'),
+                            ],
+                          )),
+                        );
                       }
                     }),
+
+              SizedBox(height: 15.h,),
+                Row(
+                  children: [
+                    Text(
+                      'اعمالنا',
+                      style: GoogleFonts.cairo(
+                        fontSize: 16.sp,
+                        color: secondColorLines,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const Spacer(),
+                    TextButton(
+                      onPressed: () {
+                        navigateTo(context, const OurWorks());
+                      },
+                      child: Text(
+                        'اعرف المزيد',
+                        style: GoogleFonts.tajawal(
+                          fontSize: 16.sp,
+                          color: secondColorLines,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: 110.h,
+                  child: BlocConsumer<OffersCubit, OffersStates>(
+                      listener: (context, state) {},
+                      builder: (context, state) {
+                        if (state is GetCategoryLoadingsState) {
+                          return Center(
+                              child: Lottie.asset(
+                                  'assets/animation/Animation - 1705103164209.json'));
+                        } else {
+                          return OffersCubit.get(context).category!.isNotEmpty
+                              ? ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  //  shrinkWrap: true,
+                                  physics: const BouncingScrollPhysics(),
+                                  itemCount:
+                                      OffersCubit.get(context).category!.length,
+                                  itemBuilder: (context, index) => InkWell(
+                                    onTap: () {
+                                      navigateTo(context,
+                                          ProductsDetails(index: index));
+                                    },
+                                    child: CachedNetworkImage(
+                                      imageUrl: OffersCubit.get(context)
+                                          .category![index]
+                                          .imageUrl
+                                          .toString(),
+                                      imageBuilder: (context, imageProvider) =>
+                                          Container(
+                                        height: 110.h,
+                                        width: 87.w,
+                                        margin: EdgeInsets.only(right: 10.0.w),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          image: DecorationImage(
+                                            image: imageProvider,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                      placeholder: (context, url) => Container(
+                                        height: 110.h,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(14),
+                                          color:
+                                              Colors.grey, // Placeholder color
+
+                                          image: const DecorationImage(
+                                            image: AssetImage(
+                                                'assets/images/placeholder.png'),
+                                            fit: BoxFit.cover,
+                                          ),
+                                          // You can add additional widgets for loading state (e.g., a loading spinner)
+                                        ),
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          Container(
+                                        height: 110.h,
+                                        width: 87.w,
+                                        margin: EdgeInsets.only(right: 10.0.w),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(8.r),
+                                          color: Colors
+                                              .red, // Placeholder color for error state
+                                        ),
+                                        // You can add additional widgets for error state (e.g., an error icon)
+                                        child: Center(child: Icon(Icons.error)),
+                                      ),
+                                      fit: BoxFit.cover,
+                                    ),
+
+                                    // Container(
+                                    //   height: 110.h,
+                                    //   width: 87.w,
+                                    //   margin: EdgeInsets.only(right: 10.0.w),
+                                    //   decoration: BoxDecoration(
+                                    //     borderRadius: BorderRadius.circular(8),
+                                    //     image: DecorationImage(
+                                    //
+                                    //         fit: BoxFit.cover,
+                                    //         image: NetworkImage(
+                                    //             OffersCubit
+                                    //                 .get(context)
+                                    //                 .category![index].imageUrl
+                                    //                 .toString())),
+                                    //   ),
+                                    // ),
+                                  ),
+                                )
+                              : ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  //  shrinkWrap: true,
+                                  physics: const BouncingScrollPhysics(),
+                                  itemCount: 3,
+                                  itemBuilder: (context, index) => InkWell(
+                                    onTap: () {
+                                      //   navigateTo(context, ProductsDetails(index: index));
+                                    },
+                                    child: Container(
+                                      height: 120.h,
+                                      width: 87.w,
+                                      margin: EdgeInsets.only(right: 10.0.w),
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(8.r),
+                                        color: Colors.grey
+                                            .shade300, // Placeholder color for error state
+                                      ),
+                                      // You can add additional widgets for error state (e.g., an error icon)
+                                      child: Center(
+                                          child: Icon(
+                                        Icons.error_outline,
+                                        color: Colors.red,
+                                      )),
+                                    ),
+                                  ),
+
+                                  // Container(
+                                  //   height: 110.h,
+                                  //   width: 87.w,
+                                  //   margin: EdgeInsets.only(right: 10.0.w),
+                                  //   decoration: BoxDecoration(
+                                  //     borderRadius: BorderRadius.circular(8),
+                                  //     image: DecorationImage(
+                                  //
+                                  //         fit: BoxFit.cover,
+                                  //         image: NetworkImage(
+                                  //             OffersCubit
+                                  //                 .get(context)
+                                  //                 .category![index].imageUrl
+                                  //                 .toString())),
+                                  //   ),
+                                  // ),
+                                );
+                        }
+                      }),
                 ),
               ],
             ),
@@ -690,45 +577,43 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-  Widget buildGridView (int i ) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-    Flexible(
-      flex: 4,
-      child: Container(
 
+  Widget buildGridView(int i) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Container(
+            height: 160.h,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
-                  image:  DecorationImage(
+                  image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: AssetImage(images[i].toString()),)
+                    image: AssetImage(images[i].toString()),
+                  )),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 5.h),
+            child: Text(
+              OffersCubit.get(context).services![i].title.toString(),
+              style: GoogleFonts.cairo(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.bold,
               ),
+            ),
+          ),
+          //sub
+          // SizedBox(
+          //   height: 45.h,
+          //   child: Text(
+          //     OffersCubit.get(context).services![i].subTitle.toString(),
+          //     style: GoogleFonts.tajawal(fontSize: 12.sp),
+          //
+          //    maxLines: 2,
+          //     overflow: TextOverflow.ellipsis,
+          //   ),
+          // ),
 
-
-
-      ),
-    ),
-  Flexible(
-    flex: 0,
-    child: Padding(
-      padding:  EdgeInsets.symmetric(vertical: 5.h),
-      child: Text(OffersCubit.get(context).services![i].title.toString(),
-        style: GoogleFonts.tajawal(fontSize: 11.sp,
-
-          fontWeight: FontWeight.bold,
-        ),),
-    ),
-  ),
-      //sub
- Flexible(
-   flex: 1,
-   child: Text(OffersCubit.get(context).services![i].subTitle.toString()
-
-          ,style: GoogleFonts.tajawal(fontSize: 10.sp),
-        ),
- ),
-
-
-    ],
-  );
+        ],
+      );
 }

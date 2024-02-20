@@ -23,8 +23,8 @@ class ContactUs extends StatefulWidget {
 
 class _ContactUsState extends State<ContactUs>
     with TickerProviderStateMixin{
-  bool checkAnimated = false ;
-  bool checkAnimatedMessage = false ;
+  bool checkAnimated = true ;
+  bool checkAnimatedMessage = true ;
 
 
   var formKey = GlobalKey<FormState>();
@@ -62,6 +62,7 @@ class _ContactUsState extends State<ContactUs>
       })..addListener(() {
         setState(() {
 
+
         });
       });
     _animationMessage = Tween<double>(begin: 300.0, end: 1.0).animate(_animationControllerMessage)
@@ -75,6 +76,9 @@ class _ContactUsState extends State<ContactUs>
       });
 
     super.initState();
+    _animationControllerMessage.forward() ;
+    _animationController.forward() ;
+    //  : _animationControllerMessage.reverse();
   }
   @override
   void dispose() {
@@ -141,7 +145,7 @@ class _ContactUsState extends State<ContactUs>
                           label: 'ادخل الاسم',
                           // hint: 'الاسم الاول',
                           keyboardType: TextInputType.name,
-                          suffix: Container(),
+
                         ),
                         SizedBox(height: 24.h),
                         Text('البريد الالكتروني',style:  GoogleFonts.tajawal(
@@ -154,7 +158,7 @@ class _ContactUsState extends State<ContactUs>
                         ),
                         defaultTextFormFeild(
                           context,
-                          suffix: Container(),
+
                           controller: email,
                           validate: (value) {
                             if (value == null || value == '') {
@@ -192,7 +196,7 @@ class _ContactUsState extends State<ContactUs>
                           label: 'الهاتف المحمول',
                           // hint: 'رقم التيلفون',
                           keyboardType: TextInputType.phone,
-                          suffix: Container(),
+
                         ),
                         SizedBox(height: 24.h),
                         Text('نص الرساله',style:  GoogleFonts.tajawal(

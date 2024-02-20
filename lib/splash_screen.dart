@@ -23,7 +23,8 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
 
 
-    Future.delayed(const Duration(seconds: 4),(){
+    Future.delayed(const Duration(seconds: 4),
+            (){
       navigateTo(context,   OnBoardingScreen());
     });
     super.initState();
